@@ -1,0 +1,31 @@
+content:
+  - name: home
+    label: Home (index.html)
+    type: file
+    path: index.html
+    fields:
+      - name: body
+        label: HTML
+        type: code
+        options:
+          language: html
+  - name: about
+    label: About (about.html)
+    type: file
+    path: about.html
+    fields:
+      - name: body
+        label: HTML
+        type: code
+        options:
+          language: html
+  - name: contact
+    label: Contact (contact.html)
+    type: file
+    path: contact.html
+    fields:
+      - name: body
+        label: HTML
+        type: code
+        options:
+          language: html
