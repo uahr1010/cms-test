@@ -1,0 +1,321 @@
+/* ============================================
+   SEN Engineering — 테스트용 사이트 스타일시트
+   컨셉: 구조 설계 도면(blueprint) 톤
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+:root {
+  --ink: #14181c;
+  --paper: #eceeea;
+  --paper-dim: #e0e3dd;
+  --blueprint: #35506b;
+  --blueprint-deep: #22374a;
+  --line: #b9c1c4;
+  --steel: #6c7780;
+  --signal: #d9661b;
+  --radius: 2px;
+  --max: 1080px;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  margin: 0;
+  letter-spacing: -0.01em;
+  color: var(--blueprint-deep);
+}
+
+.mono {
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.04em;
+}
+
+a { color: inherit; }
+
+.wrap {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
+/* ---------- header ---------- */
+.site-header {
+  border-bottom: 1px solid var(--line);
+  background: var(--paper);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.site-header .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 68px;
+}
+
+.brand {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  text-decoration: none;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.brand .mono {
+  font-size: 11px;
+  color: var(--signal);
+  font-weight: 500;
+}
+
+nav.primary { display: flex; gap: 2px; }
+
+nav.primary a {
+  text-decoration: none;
+  font-size: 13px;
+  font-family: 'IBM Plex Mono', monospace;
+  padding: 8px 14px;
+  color: var(--steel);
+  border-bottom: 2px solid transparent;
+  transition: color .15s ease, border-color .15s ease;
+}
+
+nav.primary a:hover,
+nav.primary a[aria-current="page"] {
+  color: var(--blueprint-deep);
+  border-bottom-color: var(--signal);
+}
+
+/* ---------- hero ---------- */
+.hero {
+  border-bottom: 1px solid var(--line);
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(53,80,107,.06) 40px),
+    repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(53,80,107,.06) 40px);
+}
+
+.hero .wrap {
+  padding-top: 72px;
+  padding-bottom: 64px;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 48px;
+  align-items: center;
+}
+
+.eyebrow {
+  font-size: 12px;
+  color: var(--signal);
+  margin-bottom: 14px;
+  display: block;
+}
+
+.hero h1 {
+  font-size: clamp(30px, 4.2vw, 46px);
+  font-weight: 700;
+  line-height: 1.16;
+}
+
+.hero p.lead {
+  margin-top: 18px;
+  max-width: 46ch;
+  color: var(--steel);
+  font-size: 16px;
+}
+
+.dims {
+  margin-top: 28px;
+  display: flex;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+
+.dims div { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--steel); }
+.dims strong { display: block; font-size: 20px; color: var(--blueprint-deep); font-family: 'Space Grotesk', sans-serif; }
+
+/* ---------- diagram (signature element) ---------- */
+.diagram-frame {
+  border: 1px solid var(--line);
+  background: #fff;
+  padding: 18px;
+  position: relative;
+}
+
+.diagram-frame::before {
+  content: attr(data-label);
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  background: var(--blueprint-deep);
+  color: var(--paper);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  padding: 3px 8px;
+  letter-spacing: .06em;
+}
+
+.diagram-frame svg { width: 100%; height: auto; display: block; }
+
+/* ---------- sections ---------- */
+section.block {
+  padding: 56px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+section.block h2 {
+  font-size: 24px;
+  margin-bottom: 22px;
+}
+
+.section-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--signal);
+  display: block;
+  margin-bottom: 6px;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 24px;
+}
+
+.card {
+  border: 1px solid var(--line);
+  background: #fff;
+  padding: 20px;
+}
+
+.card .mono { font-size: 11px; color: var(--signal); }
+.card h3 { font-size: 16px; margin: 8px 0 8px; }
+.card p { margin: 0; color: var(--steel); font-size: 14px; }
+
+.card-list {
+  list-style: none;
+  margin: 24px 0 0;
+  padding: 0;
+  border-top: 1px solid var(--line);
+}
+
+.card-list li {
+  display: grid;
+  grid-template-columns: 90px 1fr auto;
+  gap: 16px;
+  align-items: baseline;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.card-list .tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--signal);
+}
+
+.card-list h3 { font-size: 15px; }
+.card-list span.meta { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--steel); }
+
+/* ---------- contact form ---------- */
+form.contact-form {
+  max-width: 560px;
+  margin-top: 24px;
+  display: grid;
+  gap: 16px;
+}
+
+.field label {
+  display: block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--steel);
+  margin-bottom: 6px;
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: #fff;
+  padding: 10px 12px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.field textarea { min-height: 120px; resize: vertical; }
+
+button.submit {
+  justify-self: start;
+  background: var(--blueprint-deep);
+  color: var(--paper);
+  border: none;
+  padding: 12px 26px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  letter-spacing: .04em;
+  cursor: pointer;
+}
+
+button.submit:hover { background: var(--signal); }
+
+.info-strip {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.info-strip div { border-top: 2px solid var(--signal); padding-top: 10px; }
+.info-strip .mono { font-size: 11px; color: var(--steel); }
+.info-strip strong { display: block; margin-top: 4px; font-family: 'Space Grotesk', sans-serif; }
+
+/* ---------- footer ---------- */
+footer.site-footer {
+  padding: 28px 0;
+}
+
+footer.site-footer .wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--steel);
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 760px) {
+  .hero .wrap { grid-template-columns: 1fr; padding-top: 40px; }
+  .grid-3 { grid-template-columns: 1fr; }
+  .card-list li { grid-template-columns: 1fr; gap: 4px; }
+  .info-strip { grid-template-columns: 1fr; }
+  nav.primary { gap: 0; }
+  nav.primary a { padding: 8px 10px; font-size: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 2px;
+}
