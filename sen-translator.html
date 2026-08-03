@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SEN 기사 번역기 · KO → EN / JA / ZH</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#ffffff;
+    --mist:#f4f8fd;
+    --rule:#dbe6f3;
+    --rule-soft:#eaf1fa;
+    --ink:#0c1b2a;
+    --ink-soft:#4a5f75;
+    --ink-faint:#8298b0;
+    --blue:#0b5fce;
+    --blue-deep:#083d87;
+    --blue-wash:#e9f2ff;
+    --ok:#0a7d55;
+    --warn:#a35a00;
+    --err:#b3261e;
+    --sans:"IBM Plex Sans","IBM Plex Sans KR",-apple-system,"Segoe UI",sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+    --cjk-ja:"IBM Plex Sans",Hiragino Sans,"Hiragino Kaku Gothic ProN","Yu Gothic","Noto Sans JP",sans-serif;
+    --cjk-zh:"IBM Plex Sans","PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;background:var(--mist);color:var(--ink);font-family:var(--sans);
+    font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;
+  }
+  .eyebrow{
+    font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.13em;
+    text-transform:uppercase;color:var(--ink-faint);
+  }
+
+  /* ---------- top bar ---------- */
+  header{
+    background:var(--paper);border-bottom:1px solid var(--rule);
+    position:sticky;top:0;z-index:20;
+  }
+  .bar{
+    max-width:1560px;margin:0 auto;padding:14px 24px;
+    display:flex;align-items:center;gap:24px;flex-wrap:wrap;
+  }
+  .brand{display:flex;align-items:baseline;gap:12px;margin-right:auto}
+  .brand b{font-size:17px;font-weight:700;letter-spacing:-.01em}
+  .brand .rail{
+    font-family:var(--mono);font-size:11px;color:var(--blue);
+    border:1px solid var(--rule);border-radius:2px;padding:2px 7px;letter-spacing:.08em;
+  }
+  .field{display:flex;align-items:center;gap:8px}
+  .field label{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);white-space:nowrap}
+  input[type=password],input[type=text]{
+    font-family:var(--mono);font-size:13px;padding:7px 10px;color:var(--ink);
+    background:var(--paper);border:1px solid var(--rule);border-radius:3px;
+  }
+  input:focus-visible,textarea:focus-visible,button:focus-visible,select:focus-visible{
+    outline:2px solid var(--blue);outline-offset:1px;
+  }
+  #key{width:230px}
+  #model{width:130px}
+  .remember{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-soft)}
+
+  button{font-family:var(--sans);cursor:pointer;border-radius:3px;transition:background .15s,border-color .15s,color .15s}
+  button:disabled{cursor:not-allowed;opacity:.5}
+  .primary{
+    background:var(--blue);color:#fff;border:1px solid var(--blue);
+    font-size:14px;font-weight:600;padding:9px 20px;
+  }
+  .primary:hover:not(:disabled){background:var(--blue-deep);border-color:var(--blue-deep)}
+  .ghost{
+    background:var(--paper);color:var(--blue);border:1px solid var(--rule);
+    font-size:12.5px;font-weight:500;padding:6px 12px;
+  }
+  .ghost:hover:not(:disabled){border-color:var(--blue);background:var(--blue-wash)}
+
+  /* ---------- layout ---------- */
+  main{
+    max-width:1560px;margin:0 auto;padding:22px 24px 40px;
+    display:grid;grid-template-columns:minmax(340px,0.82fr) minmax(420px,1.18fr);gap:22px;
+    align-items:start;
+  }
+  .panel{
+    background:var(--paper);border:1px solid var(--rule);border-radius:5px;overflow:hidden;
+  }
+  .panel-head{
+    padding:13px 18px;border-bottom:1px solid var(--rule-soft);
+    display:flex;align-items:center;gap:14px;
+  }
+  .panel-head h2{margin:0;font-size:14px;font-weight:600;letter-spacing:-.005em}
+  .panel-head .spacer{margin-left:auto}
+  .count{font-family:var(--mono);font-size:11.5px;color:var(--ink-faint)}
+
+  textarea{
+    width:100%;border:0;resize:vertical;padding:18px;min-height:440px;
+    font-family:var(--sans);font-size:14.5px;line-height:1.75;color:var(--ink);background:var(--paper);
+  }
+  textarea::placeholder{color:var(--ink-faint)}
+  .source-foot{
+    padding:13px 18px;border-top:1px solid var(--rule-soft);
+    display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  }
+
+  /* ---------- language rail (signature) ---------- */
+  .rail-tabs{display:flex;border-bottom:1px solid var(--rule)}
+  .tab{
+    flex:1;background:var(--paper);border:0;border-right:1px solid var(--rule-soft);
+    padding:13px 10px 11px;text-align:left;position:relative;
+  }
+  .tab:last-child{border-right:0}
+  .tab .code{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--ink-faint);display:block}
+  .tab .name{font-size:13.5px;font-weight:600;color:var(--ink-soft);display:block;margin-top:2px}
+  .tab[aria-selected="true"]{background:var(--blue-wash)}
+  .tab[aria-selected="true"] .code{color:var(--blue)}
+  .tab[aria-selected="true"] .name{color:var(--blue-deep)}
+  .tab[aria-selected="true"]::after{
+    content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--blue);
+  }
+  .tab .dot{
+    position:absolute;top:12px;right:12px;width:7px;height:7px;border-radius:50%;
+    background:var(--rule);
+  }
+  .tab .dot.busy{background:var(--blue);animation:pulse 1s ease-in-out infinite}
+  .tab .dot.done{background:var(--ok)}
+  .tab .dot.fail{background:var(--err)}
+  @keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
+  @media (prefers-reduced-motion:reduce){.tab .dot.busy{animation:none;opacity:.7}}
+
+  .out{padding:22px 24px 26px;min-height:440px}
+  .out .placeholder{color:var(--ink-faint);font-size:14px;padding:60px 0;text-align:center}
+  .out h3{
+    margin:0 0 6px;font-size:20px;font-weight:700;line-height:1.35;letter-spacing:-.015em;
+  }
+  .out p{margin:0 0 14px;font-size:14.5px;line-height:1.8;color:#16283a}
+  .out.ja p,.out.ja h3{font-family:var(--cjk-ja)}
+  .out.zh p,.out.zh h3{font-family:var(--cjk-zh)}
+  mark.term{
+    background:none;color:inherit;
+    border-bottom:1.5px solid #9dc4f5;padding-bottom:1px;
+  }
+  .article + .article{margin-top:30px;padding-top:26px;border-top:1px solid var(--rule-soft)}
+
+  .aside{margin-top:26px;border-top:1px solid var(--rule);padding-top:18px}
+  .aside h4{margin:0 0 8px;font-family:var(--mono);font-size:11px;font-weight:600;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint)}
+  .aside ul{margin:0 0 16px;padding-left:18px}
+  .aside li{font-size:13.5px;line-height:1.65;color:var(--ink-soft);margin-bottom:5px}
+  .aside li b{color:var(--ink);font-weight:600}
+
+  .meta{
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    padding:12px 24px;border-top:1px solid var(--rule-soft);background:var(--mist);
+  }
+  .applied{font-family:var(--mono);font-size:11.5px;color:var(--ink-soft)}
+  .applied b{color:var(--blue-deep)}
+  .meta .spacer{margin-left:auto}
+
+  /* ---------- status ---------- */
+  .status{
+    font-size:13px;padding:9px 14px;border-radius:3px;margin-top:12px;display:none;
+    border:1px solid transparent;
+  }
+  .status.show{display:block}
+  .status.info{background:var(--blue-wash);border-color:#c3ddfc;color:var(--blue-deep)}
+  .status.error{background:#fdeceb;border-color:#f5c9c6;color:var(--err)}
+
+  /* ---------- glossary drawer ---------- */
+  .gloss{margin-top:22px}
+  .gloss-head{display:flex;align-items:center;gap:14px;padding:13px 18px;border-bottom:1px solid var(--rule-soft)}
+  .gloss-body{max-height:0;overflow:hidden;transition:max-height .25s ease}
+  .gloss-body.open{max-height:560px;overflow:auto}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{
+    position:sticky;top:0;background:var(--paper);text-align:left;padding:10px 14px;
+    font-family:var(--mono);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;
+    color:var(--ink-faint);border-bottom:1px solid var(--rule);font-weight:500;
+  }
+  td{padding:9px 14px;border-bottom:1px solid var(--rule-soft);vertical-align:top;line-height:1.5}
+  tbody tr:hover{background:var(--mist)}
+  td:nth-child(1){color:var(--ink);font-weight:500;width:22%}
+  td:nth-child(2),td:nth-child(3),td:nth-child(4){color:var(--ink-soft);width:26%}
+  td:nth-child(3){font-family:var(--cjk-ja)}
+  td:nth-child(4){font-family:var(--cjk-zh)}
+
+  footer{max-width:1560px;margin:0 auto;padding:0 24px 36px;color:var(--ink-faint);font-size:12px}
+
+  @media(max-width:1080px){
+    main{grid-template-columns:1fr}
+    #key{width:170px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="bar">
+    <div class="brand">
+      <b>SEN 기사 번역기</b>
+      <span class="rail">KO → EN · JA · ZH</span>
+    </div>
+    <div class="field">
+      <label for="key">API 키</label>
+      <input type="password" id="key" placeholder="sk-..." autocomplete="off" spellcheck="false">
+    </div>
+    <label class="remember"><input type="checkbox" id="remember"> 이 브라우저에 저장</label>
+    <div class="field">
+      <label for="model">모델</label>
+      <input type="text" id="model" value="gpt-4o" list="models" spellcheck="false">
+      <datalist id="models">
+        <option value="gpt-4o"></option>
+        <option value="gpt-4o-mini"></option>
+        <option value="gpt-4.1"></option>
+        <option value="gpt-4-turbo"></option>
+      </datalist>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- ============ source ============ -->
+  <section class="panel">
+    <div class="panel-head">
+      <span class="eyebrow">원문</span>
+      <h2>한국어 기사</h2>
+      <span class="spacer"></span>
+      <span class="count" id="charCount">0자</span>
+    </div>
+    <textarea id="source" placeholder="한국어 기사를 붙여넣으세요.
+
+여러 건을 한 번에 넣어도 됩니다. 제목 줄과 본문 문단을 그대로 두면 구조를 유지한 채 번역합니다."></textarea>
+    <div class="source-foot">
+      <button class="primary" id="run">번역 시작</button>
+      <button class="ghost" id="clear">지우기</button>
+      <span class="count" id="hint">API 키를 입력하면 시작할 수 있습니다</span>
+    </div>
+    <div style="padding:0 18px 16px"><div class="status" id="status"></div></div>
+  </section>
+
+  <!-- ============ output rail ============ -->
+  <section class="panel">
+    <div class="rail-tabs" role="tablist">
+      <button class="tab" role="tab" data-lang="en" aria-selected="true">
+        <span class="code">EN</span><span class="name">English</span><span class="dot" id="dot-en"></span>
+      </button>
+      <button class="tab" role="tab" data-lang="ja" aria-selected="false">
+        <span class="code">JA</span><span class="name">日本語</span><span class="dot" id="dot-ja"></span>
+      </button>
+      <button class="tab" role="tab" data-lang="zh" aria-selected="false">
+        <span class="code">ZH</span><span class="name">中文</span><span class="dot" id="dot-zh"></span>
+      </button>
+    </div>
+    <div class="out en" id="out">
+      <div class="placeholder">번역 결과가 여기에 표시됩니다.<br>용어집에 등록된 고유명사는 <mark class="term">밑줄</mark>로 표시됩니다.</div>
+    </div>
+    <div class="meta">
+      <span class="applied" id="applied">고유명사 —</span>
+      <span class="spacer"></span>
+      <button class="ghost" id="copy" disabled>복사</button>
+      <button class="ghost" id="save" disabled>.txt 저장</button>
+    </div>
+  </section>
+</main>
+
+<div style="max-width:1560px;margin:0 auto;padding:0 24px">
+  <section class="panel gloss">
+    <div class="gloss-head">
+      <span class="eyebrow">고정 용어집</span>
+      <h2 style="margin:0;font-size:14px;font-weight:600" id="glossCount"></h2>
+      <span class="spacer" style="margin-left:auto"></span>
+      <button class="ghost" id="toggleGloss">펼치기</button>
+    </div>
+    <div class="gloss-body" id="glossBody">
+      <table>
+        <thead><tr><th>한국어</th><th>English</th><th>日本語</th><th>中文</th></tr></thead>
+        <tbody id="glossRows"></tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<footer>
+  API 키는 이 브라우저에서만 사용되며, 번역 요청은 브라우저에서 OpenAI로 직접 전송됩니다. 별도의 서버를 거치지 않습니다.
+</footer>
+
+<script>
+const GLOSSARY = [
+{
+"ko": "PSRC (Prefabricated SRC)",
+"en": "PSRC (Prefabricated SRC)",
+"ja": "PSRC（Prefabricated SRC）",
+"zh": "PSRC（Prefabricated SRC）"
+},
+{
+"ko": "PSRC 공법",
+"en": "PSRC method",
+"ja": "PSRC工法",
+"zh": "PSRC工法"
+},
+{
+"ko": "PSRC 기둥",
+"en": "PSRC column",
+"ja": "PSRC柱",
+"zh": "PSRC柱"
+},
+{
+"ko": "싱가포르",
+"en": "Singapore",
+"ja": "シンガポール",
+"zh": "新加坡"
+},
+{
+"ko": "싱가포르 건설청 (BCA)",
+"en": "Building and Construction Authority (BCA)",
+"ja": "シンガポール建設庁（BCA）",
+"zh": "新加坡建设局（BCA）"
+},
+{
+"ko": "BC4:2025",
+"en": "BC4:2025",
+"ja": "BC4:2025",
+"zh": "BC4:2025"
+},
+{
+"ko": "유로코드4",
+"en": "Eurocode 4",
+"ja": "Eurocode 4",
+"zh": "Eurocode 4"
+},
+{
+"ko": "Example Calculations to the Requirement of BC4:2025",
+"en": "Example Calculations to the Requirement of BC4:2025",
+"ja": "Example Calculations to the Requirement of BC4:2025",
+"zh": "Example Calculations to the Requirement of BC4:2025"
+},
+{
+"ko": "Chapter 6 (제6장)",
+"en": "Chapter 6",
+"ja": "第6章（Chapter 6）",
+"zh": "第6章（Chapter 6）"
+},
+{
+"ko": "OSC (탈현장건설)",
+"en": "OSC (Off-Site Construction)",
+"ja": "OSC (Off-Site Construction)",
+"zh": "OSC (Off-Site Construction)"
+},
+{
+"ko": "AI (인공지능)",
+"en": "AI (artificial intelligence)",
+"ja": "AI（人工知能）",
+"zh": "AI（人工智能）"
+},
+{
+"ko": "현대차그룹",
+"en": "Hyundai Motor Group",
+"ja": "現代自動車グループ",
+"zh": "现代汽车集团"
+},
+{
+"ko": "현대차그룹 글로벌 혁신센터 (HMGICS)",
+"en": "Hyundai Motor Group Innovation Center Singapore (HMGICS)",
+"ja": "Hyundai Motor Group Innovation Center Singapore (HMGICS)",
+"zh": "Hyundai Motor Group Innovation Center Singapore (HMGICS)"
+},
+{
+"ko": "JTC (주롱도시공사)",
+"en": "JTC Corporation (formerly Jurong Town Corporation)",
+"ja": "JTC Corporation (formerly Jurong Town Corporation)",
+"zh": "JTC Corporation (formerly Jurong Town Corporation)"
+},
+{
+"ko": "JTC 물류허브",
+"en": "JTC Logistics Hub",
+"ja": "JTC Logistics Hub",
+"zh": "JTC Logistics Hub"
+},
+{
+"ko": "BCA 올해의 프로젝트 (산업부문)",
+"en": "BCA Project of the Year 2024 (Industrial Buildings category)",
+"ja": "BCA「Project of the Year 2024」（産業用建築部門）",
+"zh": "BCA「Project of the Year 2024」（工业建筑组）"
+},
+{
+"ko": "동남아시아",
+"en": "Southeast Asia",
+"ja": "東南アジア",
+"zh": "东南亚"
+},
+{
+"ko": "말레이시아",
+"en": "Malaysia",
+"ja": "マレーシア",
+"zh": "马来西亚"
+},
+{
+"ko": "태국",
+"en": "Thailand",
+"ja": "タイ",
+"zh": "泰国"
+},
+{
+"ko": "베트남",
+"en": "Vietnam",
+"ja": "ベトナム",
+"zh": "越南"
+},
+{
+"ko": "센엔지니어링그룹",
+"en": "SEN Engineering Group",
+"ja": "SEN Engineering Group",
+"zh": "SEN Engineering Group"
+},
+{
+"ko": "센코어테크",
+"en": "SENCORETECH",
+"ja": "SENCORETECH",
+"zh": "SENCORETECH"
+},
+{
+"ko": "한국전력공사 (KEPCO)",
+"en": "Korea Electric Power Corporation (KEPCO)",
+"ja": "韓国電力公社（KEPCO）",
+"zh": "韩国电力公社（KEPCO）"
+},
+{
+"ko": "TSC-PSRC 공법",
+"en": "TSC-PSRC method",
+"ja": "TSC-PSRC工法",
+"zh": "TSC-PSRC工法"
+},
+{
+"ko": "SP Group",
+"en": "SP Group",
+"ja": "SP Group",
+"zh": "SP Group"
+},
+{
+"ko": "산업통상자원부 (MOTIE)",
+"en": "Ministry of Trade, Industry and Energy (MOTIE)",
+"ja": "産業通商資源部",
+"zh": "产业通商资源部"
+},
+{
+"ko": "한국경제신문",
+"en": "The Korea Economic Daily",
+"ja": "韓国経済新聞（ハンギョン）",
+"zh": "韩国经济新闻（韩经）"
+},
+{
+"ko": "DfMA",
+"en": "DfMA (Design for Manufacture and Assembly)",
+"ja": "DfMA（製造・組立を考慮した設計）",
+"zh": "DfMA（面向制造与装配的设计）"
+},
+{
+"ko": "서울대학교 (SNU)",
+"en": "Seoul National University (SNU)",
+"ja": "ソウル大学校",
+"zh": "首尔大学校"
+},
+{
+"ko": "관악 캠퍼스",
+"en": "Gwanak Campus",
+"ja": "冠岳キャンパス",
+"zh": "冠岳校区"
+},
+{
+"ko": "당산 그랜드컨벤션센터",
+"en": "Dangsan Grand Convention Center",
+"ja": "堂山グランドコンベンションセンター",
+"zh": "堂山大会展中心"
+},
+{
+"ko": "이승환 (센코어테크 대표)",
+"en": "Lee Seung-hwan",
+"ja": "Lee Seung-hwan",
+"zh": "Lee Seung-hwan"
+},
+{
+"ko": "이창남 (센엔지니어링그룹 회장)",
+"en": "Lee Chang-nam",
+"ja": "Lee Chang-nam",
+"zh": "Lee Chang-nam"
+},
+{
+"ko": "송병주 (구조5본부 상무이사)",
+"en": "Song Byung-ju",
+"ja": "Song Byung-ju",
+"zh": "Song Byung-ju"
+},
+{
+"ko": "박종철 (구조1본부 소장)",
+"en": "Park Jong-cheol",
+"ja": "Park Jong-cheol",
+"zh": "Park Jong-cheol"
+},
+{
+"ko": "조광원 (연구개발부 차장)",
+"en": "Cho Kwang-won",
+"ja": "Cho Kwang-won",
+"zh": "Cho Kwang-won"
+},
+{
+"ko": "희림종합건축사사무소",
+"en": "Heerim Architects & Planners",
+"ja": "Heerim Architects & Planners",
+"zh": "Heerim Architects & Planners"
+},
+{
+"ko": "정영균 (희림 회장)",
+"en": "Jeong Yeong-gyun",
+"ja": "Jeong Yeong-gyun",
+"zh": "Jeong Yeong-gyun"
+},
+{
+"ko": "삼성물산 건설부문",
+"en": "Samsung C&T Corporation, Engineering & Construction Group",
+"ja": "サムスンC&T建設部門",
+"zh": "三星物产建设部门"
+},
+{
+"ko": "오세철 (삼성물산 건설부문 대표)",
+"en": "Oh Se-chul",
+"ja": "Oh Se-chul",
+"zh": "Oh Se-chul"
+},
+{
+"ko": "김영오 (서울대 공대 학장)",
+"en": "Kim Young-oh",
+"ja": "Kim Young-oh",
+"zh": "Kim Young-oh"
+},
+{
+"ko": "리처드 리우 (NUS 교수)",
+"en": "Prof. J.Y. Richard Liew (Liew Jat Yuen)",
+"ja": "Prof. J.Y. Richard Liew (Liew Jat Yuen)",
+"zh": "Prof. J.Y. Richard Liew (Liew Jat Yuen)"
+},
+{
+"ko": "싱가포르국립대 (NUS)",
+"en": "National University of Singapore (NUS)",
+"ja": "シンガポール国立大学（NUS）",
+"zh": "新加坡国立大学（NUS）"
+},
+{
+"ko": "영국 구조기술사회 (ISE)",
+"en": "Institution of Structural Engineers (ISE), UK",
+"ja": "英国構造技術者協会（ISE）",
+"zh": "英国结构工程师学会（ISE）"
+},
+{
+"ko": "ISE 싱가포르지부",
+"en": "Institution of Structural Engineers (ISE), Singapore Branch",
+"ja": "ISEシンガポール支部",
+"zh": "ISE新加坡分会"
+},
+{
+"ko": "제11회 구조엔지니어 아시아 퍼시픽 포럼",
+"en": "11th Structural Engineers Asia Pacific Forum",
+"ja": "第11回 構造エンジニア・アジア太平洋フォーラム",
+"zh": "第11届结构工程师亚太论坛"
+},
+{
+"ko": "아루프 (ARUP)",
+"en": "Arup",
+"ja": "Arup",
+"zh": "Arup"
+},
+{
+"ko": "베카 (BECA)",
+"en": "Beca",
+"ja": "Beca",
+"zh": "Beca"
+},
+{
+"ko": "KS철강",
+"en": "KS-grade steel (Korean Industrial Standards)",
+"ja": "韓国産業規格（KS）鋼材",
+"zh": "韩国工业标准（KS）钢材"
+},
+{
+"ko": "싱가포르 M반도체 (MICRON)",
+"en": "Micron Semiconductor Singapore (Micron)",
+"ja": "Micron Semiconductor Singapore (Micron)",
+"zh": "Micron Semiconductor Singapore (Micron)"
+},
+{
+"ko": "BC1 설계코드집",
+"en": "BC1 design code",
+"ja": "BC1 design code",
+"zh": "BC1 design code"
+},
+{
+"ko": "Kimly (건설사)",
+"en": "Kimly Construction",
+"ja": "キムリー・コンストラクション（Kimly Construction）",
+"zh": "Kimly Construction（新加坡建筑公司）"
+},
+{
+"ko": "Project of The Year (POTY)",
+"en": "BCA Awards – Project of the Year (POTY)",
+"ja": "BCAアワード「Project of the Year」（POTY）",
+"zh": "BCA奖项“Project of the Year”（POTY）"
+},
+{
+"ko": "한국강구조학회 (KSSC)",
+"en": "Korean Society of Steel Construction (KSSC)",
+"ja": "韓国鋼構造学会（KSSC）",
+"zh": "韩国钢结构学会（KSSC）"
+},
+{
+"ko": "이철호 (강구조학회장, 서울대 교수)",
+"en": "Lee Cheol-ho",
+"ja": "Lee Cheol-ho",
+"zh": "Lee Cheol-ho"
+},
+{
+"ko": "인스파이어 엔터테인먼트 리조트",
+"en": "Inspire Entertainment Resort",
+"ja": "インスパイア・エンターテインメント・リゾート",
+"zh": "INSPIRE娱乐度假村"
+},
+{
+"ko": "고덕대교",
+"en": "Godeok Bridge",
+"ja": "高徳大橋（Godeok Bridge）",
+"zh": "高德大桥（Godeok Bridge）"
+},
+{
+"ko": "올해의 강구조물",
+"en": "Steel Structure of the Year",
+"ja": "「今年の鋼構造物」賞",
+"zh": "“年度钢结构”奖"
+},
+{
+"ko": "올해의 강구조인",
+"en": "Steel Structure Person of the Year",
+"ja": "「今年の鋼構造人」賞",
+"zh": "“年度钢结构人物”奖"
+}
+];
+
+const LANGS = {
+  en:{label:"English", key:"en", prompt:"English"},
+  ja:{label:"Japanese", key:"ja", prompt:"Japanese"},
+  zh:{label:"Chinese", key:"zh", prompt:"Chinese"}
+};
+
+const results = {en:null, ja:null, zh:null};
+let active = "en";
+
+/* ---------- glossary table ---------- */
+const rows = GLOSSARY.map(t =>
+  `<tr><td>${esc(t.ko)}</td><td>${esc(t.en)}</td><td>${esc(t.ja)}</td><td>${esc(t.zh)}</td></tr>`
+).join("");
+document.getElementById("glossRows").innerHTML = rows;
+document.getElementById("glossCount").textContent = GLOSSARY.length + "개 항목";
+
+document.getElementById("toggleGloss").addEventListener("click", e => {
+  const body = document.getElementById("glossBody");
+  const open = body.classList.toggle("open");
+  e.target.textContent = open ? "접기" : "펼치기";
+});
+
+/* ---------- key persistence ---------- */
+const keyInput = document.getElementById("key");
+const rememberBox = document.getElementById("remember");
+try{
+  const saved = localStorage.getItem("sen_openai_key");
+  if(saved){ keyInput.value = saved; rememberBox.checked = true; }
+  const savedModel = localStorage.getItem("sen_model");
+  if(savedModel) document.getElementById("model").value = savedModel;
+}catch(e){}
+function persist(){
+  try{
+    if(rememberBox.checked){ localStorage.setItem("sen_openai_key", keyInput.value); }
+    else{ localStorage.removeItem("sen_openai_key"); }
+    localStorage.setItem("sen_model", document.getElementById("model").value);
+  }catch(e){}
+}
+keyInput.addEventListener("change", persist);
+rememberBox.addEventListener("change", persist);
+document.getElementById("model").addEventListener("change", persist);
+
+/* ---------- source counter ---------- */
+const source = document.getElementById("source");
+const hint = document.getElementById("hint");
+source.addEventListener("input", () => {
+  document.getElementById("charCount").textContent = source.value.length.toLocaleString() + "자";
+});
+document.getElementById("clear").addEventListener("click", () => {
+  source.value = ""; source.dispatchEvent(new Event("input")); source.focus();
+});
+
+/* ---------- tabs ---------- */
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", t === tab));
+    active = tab.dataset.lang;
+    render(active);
+  });
+});
+
+/* ---------- prompt ---------- */
+function glossaryTable(){
+  const head = "| Korean source | English | Japanese | Chinese |\n|---|---|---|---|";
+  const body = GLOSSARY.map(t => `| ${t.ko} | ${t.en} | ${t.ja} | ${t.zh} |`).join("\n");
+  return head + "\n" + body;
+}
+
+function systemPrompt(langName){
+  return `# ROLE
+You are a professional news translator working from Korean into ${langName} for SEN Engineering Group / SENCORETECH. You translate for publication: accurate, natural, and in the register of a corporate/wire-service news article.
+
+# GLOSSARY (highest priority — overrides every other rule)
+The table below is the fixed, pre-verified terminology base for this company. It was compiled and fact-checked in advance — do not second-guess, "improve," or substitute any entry, even if an alternative rendering seems more natural or more common.
+
+1. If a term below appears anywhere in the source article — in any inflected, abbreviated, or partial form — render it EXACTLY as given in the ${langName} column, at every occurrence: headline, body, quotes, photo captions, and figure or table labels.
+2. Grammatical inflection around the term is allowed (possessive 's, plural, Japanese particles, Chinese measure words). The term's base form must remain character-for-character identical to the glossary entry.
+3. Where the glossary entry itself contains a parenthetical (e.g. an acronym or a qualifier), reproduce the parenthetical exactly as shown unless doing so breaks the sentence grammatically — in that case keep the core term intact and adapt only the surrounding punctuation.
+4. Never insert a glossary term that does not correspond to something in the source.
+
+${glossaryTable()}
+
+# PROPER NOUNS NOT IN THE GLOSSARY
+5. For any proper noun in the source that is NOT in the glossary above, use the entity's own official name in the target language when you are certain of it.
+6. If you are NOT certain of an official form, do not invent one. Transliterate using the standard system below, and list the item in "terms_to_confirm" so it can be reviewed and added to the glossary.
+   - English : Revised Romanization of Korean. Personal names as Given-name hyphenated after the surname (e.g. Hong Gil-dong).
+   - Japanese: Korean personal and place names in katakana, following standard Japanese press practice; keep the Hanja reading only when that is the established Japanese form.
+   - Chinese : Use the established Hanja/Chinese characters when the entity has one; otherwise transliterate phonetically.
+7. On first mention of an organization or person unfamiliar to the target audience, you may add the original Korean in parentheses. Do this only once per entity.
+
+# TRANSLATION RULES
+8.  Preserve the article's structure exactly: headline, subheadline, dateline, byline, paragraph breaks, and paragraph order. Do not merge, split, reorder, or omit paragraphs. Do not add commentary, background, or explanation not in the source. If the input contains several articles, translate all of them and keep them in the same order.
+9.  Translate meaning, not word order. Long Korean sentences may be split for readability, but no information may be added or dropped.
+10. Quotations must remain quotations and must not be paraphrased.
+11. Numbers, dates, units, and currency: keep the source figure. Convert the format to target-language convention (e.g. 1억 2천만 원 -> 120 million won). Do not convert currency into another currency and do not round.
+12. If any part of the source is ambiguous, genuinely unclear, appears to contain an error, or uses a term inconsistently (e.g. a design-code number that doesn't match earlier usage), translate the most literal reading and record it in "notes". Do not guess at intended meaning silently or "correct" the source.
+13. Register: ${registerFor(langName)}
+14. Technical and industry terms (construction, structural engineering, finance) must use the accepted term of art in the target language, not a literal rendering, except where the glossary above already fixes the term.
+15. Preserve markdown links, their anchor text, and their URLs. Translate the anchor text; never alter the URL.
+
+# OUTPUT
+Return a single JSON object, nothing else:
+{
+  "articles": [ { "headline": "...", "paragraphs": ["...", "..."] } ],
+  "terms_to_confirm": [ { "source": "Korean term", "rendered": "your rendering", "reason": "why it needs confirming" } ],
+  "notes": [ "..." ]
+}
+Each article in the source becomes one entry in "articles", in source order. "paragraphs" holds the body paragraphs as plain strings, in source order. Use empty arrays when a section has no content.
+
+# SELF-CHECK BEFORE RESPONDING
+- Every glossary term that appears in the source is rendered in the exact form given above, with zero exceptions.
+- Paragraph count matches the source.
+- Every number and date in the source appears in the translation.
+- No sentence was added that has no basis in the source.`;
+}
+
+function registerFor(lang){
+  if(lang === "English") return "AP-style news / corporate-communications prose, active voice where natural, no honorifics.";
+  if(lang === "Japanese") return "新聞体（だ・である調）, standard press conventions.";
+  return "Simplified characters, mainland news register.";
+}
+
+/* ---------- run ---------- */
+document.getElementById("run").addEventListener("click", run);
+
+async function run(){
+  const key = keyInput.value.trim();
+  const model = document.getElementById("model").value.trim() || "gpt-4o";
+  const text = source.value.trim();
+
+  if(!key)  return fail("API 키를 입력하세요.");
+  if(!text) return fail("번역할 한국어 기사를 붙여넣으세요.");
+
+  persist();
+  setStatus("info", "3개 언어를 동시에 번역하는 중입니다. 기사 분량에 따라 1~3분 정도 걸릴 수 있습니다.");
+  document.getElementById("run").disabled = true;
+  ["en","ja","zh"].forEach(l => { results[l] = null; setDot(l, "busy"); });
+  render(active);
+
+  await Promise.all(Object.keys(LANGS).map(async lang => {
+    try{
+      results[lang] = await translate(key, model, text, LANGS[lang].prompt);
+      setDot(lang, "done");
+    }catch(err){
+      results[lang] = { error: err.message || String(err) };
+      setDot(lang, "fail");
+    }
+    if(lang === active) render(lang);
+  }));
+
+  document.getElementById("run").disabled = false;
+  const failed = Object.keys(results).filter(l => results[l] && results[l].error);
+  if(failed.length === 3) setStatus("error", "세 언어 모두 실패했습니다. API 키와 모델 이름을 확인하세요.");
+  else if(failed.length)  setStatus("error", failed.map(l => LANGS[l].label).join(", ") + " 번역이 실패했습니다. 해당 탭에서 원인을 확인하세요.");
+  else setStatus("info", "번역이 끝났습니다. 각 탭에서 결과를 확인하고 복사하거나 저장하세요.");
+  render(active);
+}
+
+async function translate(key, model, article, langName){
+  const res = await fetch("https://api.openai.com/v1/chat/completions", {
+    method:"POST",
+    headers:{ "Content-Type":"application/json", "Authorization":"Bearer " + key },
+    body: JSON.stringify({
+      model,
+      temperature: 0.2,
+      response_format: { type:"json_object" },
+      messages:[
+        { role:"system", content: systemPrompt(langName) },
+        { role:"user",   content: "<target_language>" + langName + "</target_language>\n\n<article>\n" + article + "\n</article>" }
+      ]
+    })
+  });
+
+  if(!res.ok){
+    let detail = res.status + " " + res.statusText;
+    try{ const j = await res.json(); if(j.error && j.error.message) detail = j.error.message; }catch(e){}
+    throw new Error(detail);
+  }
+  const data = await res.json();
+  const raw = (data.choices && data.choices[0] && data.choices[0].message.content) || "";
+  try{
+    return JSON.parse(raw);
+  }catch(e){
+    throw new Error("응답을 JSON으로 읽지 못했습니다. 다른 모델로 다시 시도해 보세요.");
+  }
+}
+
+/* ---------- render ---------- */
+function render(lang){
+  const out = document.getElementById("out");
+  out.className = "out " + lang;
+  const r = results[lang];
+
+  const copyBtn = document.getElementById("copy");
+  const saveBtn = document.getElementById("save");
+  const applied = document.getElementById("applied");
+
+  if(!r){
+    const busy = document.getElementById("dot-" + lang).classList.contains("busy");
+    out.innerHTML = `<div class="placeholder">${busy ? LANGS[lang].label + " 번역 중…" : "번역 결과가 여기에 표시됩니다.<br>용어집에 등록된 고유명사는 <mark class=\"term\">밑줄</mark>로 표시됩니다."}</div>`;
+    copyBtn.disabled = saveBtn.disabled = true;
+    applied.textContent = "고유명사 —";
+    return;
+  }
+
+  if(r.error){
+    out.innerHTML = `<div class="placeholder" style="color:var(--err)">${esc(r.error)}</div>`;
+    copyBtn.disabled = saveBtn.disabled = true;
+    applied.textContent = "고유명사 —";
+    return;
+  }
+
+  const terms = GLOSSARY.map(t => t[lang]).filter(Boolean);
+  const seen = new Set();
+  const articles = r.articles || [];
+
+  let html = articles.map(a => {
+    const head = a.headline ? `<h3>${mark(a.headline, terms, seen, lang)}</h3>` : "";
+    const body = (a.paragraphs || []).map(p => `<p>${mark(p, terms, seen, lang)}</p>`).join("");
+    return `<div class="article">${head}${body}</div>`;
+  }).join("");
+
+  if(!html) html = `<div class="placeholder">번역된 본문이 없습니다.</div>`;
+
+  const tc = r.terms_to_confirm || [];
+  const notes = r.notes || [];
+  if(tc.length || notes.length){
+    html += `<div class="aside">`;
+    if(tc.length){
+      html += `<h4>확인 필요 용어</h4><ul>` + tc.map(t =>
+        `<li><b>${esc(t.source || "")}</b> → ${esc(t.rendered || "")}${t.reason ? " — " + esc(t.reason) : ""}</li>`
+      ).join("") + `</ul>`;
+    }
+    if(notes.length){
+      html += `<h4>메모</h4><ul>` + notes.map(n => `<li>${esc(n)}</li>`).join("") + `</ul>`;
+    }
+    html += `</div>`;
+  }
+
+  out.innerHTML = html;
+  copyBtn.disabled = saveBtn.disabled = false;
+  applied.innerHTML = `고유명사 <b>${seen.size}</b> / ${GLOSSARY.length} 적용`;
+}
+
+/* highlight glossary terms; records which ones were found */
+function mark(text, terms, seen, lang){
+  let out = esc(text || "");
+  const sorted = terms.slice().sort((a,b) => b.length - a.length);
+  const parts = sorted.map(t => escRe(esc(t))).filter(Boolean);
+  if(!parts.length) return out;
+  const re = new RegExp("(" + parts.join("|") + ")", "g");
+  return out.replace(re, m => {
+    const hit = GLOSSARY.find(t => esc(t[lang]) === m);
+    if(hit) seen.add(hit.ko);
+    return `<mark class="term">${m}</mark>`;
+  });
+}
+
+function plainText(lang){
+  const r = results[lang];
+  if(!r || r.error) return "";
+  let s = (r.articles || []).map(a =>
+    (a.headline ? a.headline + "\n\n" : "") + (a.paragraphs || []).join("\n\n")
+  ).join("\n\n\n");
+  const tc = r.terms_to_confirm || [];
+  const notes = r.notes || [];
+  if(tc.length) s += "\n\n\n[Terms to confirm]\n" + tc.map(t => `- ${t.source} -> ${t.rendered}${t.reason ? " (" + t.reason + ")" : ""}`).join("\n");
+  if(notes.length) s += "\n\n[Notes]\n" + notes.map(n => "- " + n).join("\n");
+  return s;
+}
+
+document.getElementById("copy").addEventListener("click", async e => {
+  try{
+    await navigator.clipboard.writeText(plainText(active));
+    e.target.textContent = "복사됨";
+    setTimeout(() => e.target.textContent = "복사", 1400);
+  }catch(err){
+    setStatus("error", "클립보드에 접근하지 못했습니다. 본문을 직접 선택해 복사하세요.");
+  }
+});
+
+document.getElementById("save").addEventListener("click", () => {
+  const blob = new Blob([plainText(active)], {type:"text/plain;charset=utf-8"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "SEN_번역_" + active.toUpperCase() + ".txt";
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+/* ---------- helpers ---------- */
+function esc(s){
+  return String(s == null ? "" : s)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+function escRe(s){ return s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"); }
+function setDot(lang, state){
+  const d = document.getElementById("dot-" + lang);
+  d.className = "dot " + state;
+}
+function setStatus(kind, msg){
+  const el = document.getElementById("status");
+  el.className = "status show " + kind;
+  el.textContent = msg;
+}
+function fail(msg){ setStatus("error", msg); }
+
+hint.textContent = GLOSSARY.length + "개 고유명사가 고정 적용됩니다";
+</script>
+</body>
+</html>
