@@ -1,0 +1,11 @@
+content:
+  - name: homepage
+    label: Homepage
+    type: file
+    path: index.html
+    fields:
+      - name: body
+        label: HTML content
+        type: code
+        options:
+          language: html
