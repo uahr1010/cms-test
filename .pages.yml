@@ -48,7 +48,8 @@ content:
       - name: tag
         label: 태그
         type: select
-        options: [PRESS, PROJECT, EVENT]
+        options:
+          values: [PRESS, PROJECT, EVENT]
       - name: body
         label: 내용
         type: text
