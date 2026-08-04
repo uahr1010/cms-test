@@ -3,17 +3,32 @@ content:
     label: Home (index.html)
     type: file
     path: index.html
+    format: raw
     fields:
-      - { name: body, label: HTML, type: code, options: { language: html } }
+      - name: body
+        label: HTML
+        type: code
+        options:
+          language: html
   - name: about
     label: About (about.html)
     type: file
     path: about.html
+    format: raw
     fields:
-      - { name: body, label: HTML, type: code, options: { language: html } }
+      - name: body
+        label: HTML
+        type: code
+        options:
+          language: html
   - name: contact
     label: Contact (contact.html)
     type: file
     path: contact.html
+    format: raw
     fields:
-      - { name: body, label: HTML, type: code, options: { language: html } }
+      - name: body
+        label: HTML
+        type: code
+        options:
+          language: html
