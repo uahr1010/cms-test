@@ -32,3 +32,23 @@ content:
         type: code
         options:
           language: html
+  - name: news
+    label: 뉴스/소식
+    type: file
+    path: data/news.json
+    format: json
+    list: true
+    fields:
+      - name: title
+        label: 제목
+        type: string
+      - name: date
+        label: 날짜
+        type: date
+      - name: tag
+        label: 태그
+        type: select
+        options: [PRESS, PROJECT, EVENT]
+      - name: body
+        label: 내용
+        type: text
