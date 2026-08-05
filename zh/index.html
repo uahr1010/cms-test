@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEN ENGINEERING GROUP — 首页</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a href="index.html" class="brand">SEN <span class="mono">ENGINEERING</span></a>
+    <nav class="primary"><a href="index.html" aria-current="page">首页</a><a href="about.html">公司简介</a><a href="contact.html">联系我们</a></nav>
+    <div class="langswitch"><a href="../index.html">KO</a><a href="../en/index.html">EN</a><a href="../ja/index.html">JA</a><a href="../zh/index.html" aria-current="true">ZH</a></div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow mono">TEST BUILD — 非正式站点</span>
+      <h1>每一根柱子<br>都有设计依据。</h1>
+      <p class="lead">SEN工程集团是一家研究并在现场应用预制组合柱（PSRC）与钢­混凝土组合梁（TSC）工法的结构工程企业。</p>
+      <div class="dims">
+        <div><strong>2012–</strong>研发历程</div>
+        <div><strong>BC4:2025</strong>列入新加坡设计规范</div>
+        <div><strong>OSC</strong>预制结构体系</div>
+      </div>
+    </div>
+    <div class="diagram-frame" data-label="FIG.01 — PSRC SECTION">
+      <svg viewBox="0 0 320 300" xmlns="http://www.w3.org/2000/svg">
+        <rect x="60" y="30" width="200" height="200" fill="none" stroke="#35506b" stroke-width="2"/>
+        <g fill="#22374a">
+          <rect x="130" y="40" width="60" height="12"/>
+          <rect x="130" y="178" width="60" height="12"/>
+          <rect x="152" y="40" width="16" height="150"/>
+        </g>
+        <line x1="60" y1="14" x2="260" y2="14" stroke="#6c7780" stroke-width="1"/>
+        <line x1="60" y1="8" x2="60" y2="20" stroke="#6c7780" stroke-width="1"/>
+        <line x1="260" y1="8" x2="260" y2="20" stroke="#6c7780" stroke-width="1"/>
+        <text x="160" y="10" text-anchor="middle" font-size="10" fill="#6c7780" font-family="monospace">B = 500</text>
+        <line x1="42" y1="30" x2="42" y2="230" stroke="#6c7780" stroke-width="1"/>
+        <line x1="36" y1="30" x2="48" y2="30" stroke="#6c7780" stroke-width="1"/>
+        <line x1="36" y1="230" x2="48" y2="230" stroke="#6c7780" stroke-width="1"/>
+        <text x="30" y="130" text-anchor="middle" font-size="10" fill="#6c7780" font-family="monospace" transform="rotate(-90 30 130)">H = 500</text>
+        <text x="60" y="252" font-size="10" fill="#35506b" font-family="monospace">CONCRETE ENCASEMENT</text>
+        <text x="60" y="266" font-size="10" fill="#22374a" font-family="monospace">STEEL H-SECTION (CORE)</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap">
+    <span class="section-num mono">01 — 技术</span>
+    <h2>三大核心工法</h2>
+    <div class="grid-3">
+      <div class="card"><span class="mono">TECH / 01</span><h3>PSRC组合柱</h3><p>在工厂预制的钢­混凝土组合柱，无需现场浇筑即可实现快速施工。</p></div>
+      <div class="card"><span class="mono">TECH / 02</span><h3>TSC组合梁</h3><p>结合钢材与混凝土的组合梁体系，在降低层高的同时提升施工性能。</p></div>
+      <div class="card"><span class="mono">TECH / 03</span><h3>OSC预制工法</h3><p>基于Off-Site Construction，应对劳动力老龄化与安全法规趋严的施工方式。</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap">
+    <span class="section-num mono">02 — 最新动态</span>
+    <h2>Data Archive</h2>
+    <ul class="card-list" id="news-list"
+        data-src="../data/news.zh.json"
+        data-loading="加载中…"
+        data-empty="暂无动态。"
+        data-error="无法加载文章数据。">
+      <li><span class="meta">加载中…</span></li>
+    </ul>
+  </div>
+</section>
+
+<script src="../app.js"></script>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span>© SEN ENGINEERING GROUP — TEST BUILD</span>
+    <span class="mono">zh/index.html</span>
+  </div>
+</footer>
+
+</body>
+</html>
