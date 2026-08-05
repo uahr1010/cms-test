@@ -1,0 +1,154 @@
+media:
+  input: media/images
+  output: /media/images
+  extensions: [png, jpg, jpeg, webp, gif]
+
+content:
+  # ===== 여기서 기사를 씁니다 =====
+  - name: drafts
+    label: ✍️ 기사 작성
+    type: collection
+    path: drafts
+    view:
+      fields: [title, date, tag, published]
+    fields:
+      - name: title
+        label: 제목 (한국어)
+        type: string
+      - name: date
+        label: 날짜
+        type: date
+      - name: tag
+        label: 분류
+        type: select
+        options:
+          values: [PRESS, PROJECT, EVENT]
+      - name: image
+        label: 사진
+        type: image
+      - name: published
+        label: 게시 완료
+        type: boolean
+        default: false
+        description: 체크하지 마세요. 게시가 끝나면 자동으로 켜집니다.
+      - name: body
+        label: 본문 (한국어)
+        type: text
+    actions:
+      - name: translate-publish
+        label: 번역 후 게시
+        scope: collection
+        workflow: translate-publish.yml
+
+  # ===== 고유명사 용어집 =====
+  - name: glossary
+    label: 📖 용어집
+    type: file
+    path: data/glossary.json
+    format: json
+    list: true
+    fields:
+      - { name: ko, label: 한국어, type: string }
+      - { name: en, label: 영어, type: string }
+      - { name: ja, label: 일본어, type: string }
+      - { name: zh, label: 중국어, type: string }
+
+  # ===== 게시된 기사 (수정·삭제용) =====
+  - name: published
+    label: 📰 게시된 기사
+    type: group
+    items:
+      - name: news_ko
+        label: 한국어
+        type: file
+        path: data/news.ko.json
+        format: json
+        list: true
+        view:
+          fields: [title, date, tag]
+        fields:
+          - { name: title, label: 제목, type: string }
+          - { name: date, label: 날짜, type: date }
+          - { name: tag, label: 분류, type: select, options: { values: [PRESS, PROJECT, EVENT] } }
+          - { name: lang, label: 언어, type: string }
+          - { name: image, label: 사진, type: image }
+          - { name: body, label: 본문, type: text }
+      - name: news_en
+        label: English
+        type: file
+        path: data/news.en.json
+        format: json
+        list: true
+        view:
+          fields: [title, date, tag]
+        fields:
+          - { name: title, label: 제목, type: string }
+          - { name: date, label: 날짜, type: date }
+          - { name: tag, label: 분류, type: select, options: { values: [PRESS, PROJECT, EVENT] } }
+          - { name: lang, label: 언어, type: string }
+          - { name: image, label: 사진, type: image }
+          - { name: body, label: 본문, type: text }
+      - name: news_ja
+        label: 日本語
+        type: file
+        path: data/news.ja.json
+        format: json
+        list: true
+        view:
+          fields: [title, date, tag]
+        fields:
+          - { name: title, label: 제목, type: string }
+          - { name: date, label: 날짜, type: date }
+          - { name: tag, label: 분류, type: select, options: { values: [PRESS, PROJECT, EVENT] } }
+          - { name: lang, label: 언어, type: string }
+          - { name: image, label: 사진, type: image }
+          - { name: body, label: 본문, type: text }
+      - name: news_zh
+        label: 中文
+        type: file
+        path: data/news.zh.json
+        format: json
+        list: true
+        view:
+          fields: [title, date, tag]
+        fields:
+          - { name: title, label: 제목, type: string }
+          - { name: date, label: 날짜, type: date }
+          - { name: tag, label: 분류, type: select, options: { values: [PRESS, PROJECT, EVENT] } }
+          - { name: lang, label: 언어, type: string }
+          - { name: image, label: 사진, type: image }
+          - { name: body, label: 본문, type: text }
+
+  # ===== 페이지 직접 수정 =====
+  - name: pages
+    label: 🗂 페이지 편집
+    type: group
+    items:
+      - name: page_ko
+        label: 한국어
+        type: group
+        items:
+          - { name: home_ko, label: Home, type: file, path: index.html, format: raw, fields: [{ name: body, label: HTML, type: code, options: { language: html } }] }
+          - { name: about_ko, label: About, type: file, path: about.html, format: raw, fields: [{ name: body, label: HTML, type: code, options: { language: html } }] }
+          - { name: contact_ko, label: Contact, type: file, path: contact.html, format: raw, fields: [{ name: body, label: HTML, type: code, options: { language: html } }] }
+      - name: page_en
+        label: English
+        type: group
+        items:
+          - { name: home_en, label: Home, type: file, path: en/index.html, format: raw, fields: [{ name: body, label: HTML, type: code, options: { language: html } }] }
+          - { name: about_en, label: About, type: file, path: en/about.html, format: raw, fields: [{ name: body, label: HTML, type: code, options: { language: html } }] }
+          - { name: contact_en, label: Contact, type: file, path: en/contact.html, format: raw, fields: [{ name: body, label: HTML, type: code, options: { language: html } }] }
+      - name: page_ja
+        label: 日本語
+        type: group
+        items:
+          - { name: home_ja, label: Home, type: file, path: ja/index.html, format: raw, fields: [{ name: body, label: HTML, type: code, options: { language: html } }] }
+          - { name: about_ja, label: About, type: file, path: ja/about.html, format: raw, fields: [{ name: body, label: HTML, type: code, options: { language: html } }] }
+          - { name: contact_ja, label: Contact, type: file, path: ja/contact.html, format: raw, fields: [{ name: body, label: HTML, type: code, options: { language: html } }] }
+      - name: page_zh
+        label: 中文
+        type: group
+        items:
+          - { name: home_zh, label: Home, type: file, path: zh/index.html, format: raw, fields: [{ name: body, label: HTML, type: code, options: { language: html } }] }
+          - { name: about_zh, label: About, type: file, path: zh/about.html, format: raw, fields: [{ name: body, label: HTML, type: code, options: { language: html } }] }
+          - { name: contact_zh, label: Contact, type: file, path: zh/contact.html, format: raw, fields: [{ name: body, label: HTML, type: code, options: { language: html } }] }
