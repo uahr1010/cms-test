@@ -1,0 +1,41 @@
+name: 번역 후 게시
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  translate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 저장소 내려받기
+        uses: actions/checkout@v4
+
+      - name: Node.js 준비
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 필요한 라이브러리 설치
+        run: npm install js-yaml@4
+
+      - name: 번역 및 게시 실행
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: gpt-4o-mini
+        run: node scripts/translate-publish.mjs
+
+      - name: 변경 내용 커밋
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add -A
+            git commit -m "자동 번역 게시"
+            git push
+          else
+            echo "변경된 내용이 없습니다."
+          fi
