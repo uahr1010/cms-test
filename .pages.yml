@@ -1,142 +1,152 @@
 content:
-  # ---------- 한국어 ----------
-  - name: home_ko
-    label: Home (KO)
-    type: file
-    path: index.html
-    format: raw
-    fields:
-      - { name: body, label: HTML, type: code, options: { language: html } }
-  - name: about_ko
-    label: About (KO)
-    type: file
-    path: about.html
-    format: raw
-    fields:
-      - { name: body, label: HTML, type: code, options: { language: html } }
-  - name: contact_ko
-    label: Contact (KO)
-    type: file
-    path: contact.html
-    format: raw
-    fields:
-      - { name: body, label: HTML, type: code, options: { language: html } }
+  - name: ko
+    label: 🇰🇷 한국어
+    type: group
+    items:
+      - name: home_ko
+        label: Home
+        type: file
+        path: index.html
+        format: raw
+        fields:
+          - { name: body, label: HTML, type: code, options: { language: html } }
+      - name: about_ko
+        label: About
+        type: file
+        path: about.html
+        format: raw
+        fields:
+          - { name: body, label: HTML, type: code, options: { language: html } }
+      - name: contact_ko
+        label: Contact
+        type: file
+        path: contact.html
+        format: raw
+        fields:
+          - { name: body, label: HTML, type: code, options: { language: html } }
+      - name: news_ko
+        label: 뉴스
+        type: file
+        path: data/news.ko.json
+        format: json
+        list: true
+        fields:
+          - { name: title, label: 제목, type: string }
+          - { name: date, label: 날짜, type: date }
+          - { name: tag, label: 태그, type: select, options: { values: [PRESS, PROJECT, EVENT] } }
+          - { name: lang, label: 언어, type: string }
+          - { name: body, label: 내용, type: text }
 
-  # ---------- 영어 ----------
-  - name: home_en
-    label: Home (EN)
-    type: file
-    path: en/index.html
-    format: raw
-    fields:
-      - { name: body, label: HTML, type: code, options: { language: html } }
-  - name: about_en
-    label: About (EN)
-    type: file
-    path: en/about.html
-    format: raw
-    fields:
-      - { name: body, label: HTML, type: code, options: { language: html } }
-  - name: contact_en
-    label: Contact (EN)
-    type: file
-    path: en/contact.html
-    format: raw
-    fields:
-      - { name: body, label: HTML, type: code, options: { language: html } }
+  - name: en
+    label: 🇺🇸 English
+    type: group
+    items:
+      - name: home_en
+        label: Home
+        type: file
+        path: en/index.html
+        format: raw
+        fields:
+          - { name: body, label: HTML, type: code, options: { language: html } }
+      - name: about_en
+        label: About
+        type: file
+        path: en/about.html
+        format: raw
+        fields:
+          - { name: body, label: HTML, type: code, options: { language: html } }
+      - name: contact_en
+        label: Contact
+        type: file
+        path: en/contact.html
+        format: raw
+        fields:
+          - { name: body, label: HTML, type: code, options: { language: html } }
+      - name: news_en
+        label: News
+        type: file
+        path: data/news.en.json
+        format: json
+        list: true
+        fields:
+          - { name: title, label: Title, type: string }
+          - { name: date, label: Date, type: date }
+          - { name: tag, label: Tag, type: select, options: { values: [PRESS, PROJECT, EVENT] } }
+          - { name: lang, label: Language, type: string }
+          - { name: body, label: Body, type: text }
 
-  # ---------- 일본어 ----------
-  - name: home_ja
-    label: Home (JA)
-    type: file
-    path: ja/index.html
-    format: raw
-    fields:
-      - { name: body, label: HTML, type: code, options: { language: html } }
-  - name: about_ja
-    label: About (JA)
-    type: file
-    path: ja/about.html
-    format: raw
-    fields:
-      - { name: body, label: HTML, type: code, options: { language: html } }
-  - name: contact_ja
-    label: Contact (JA)
-    type: file
-    path: ja/contact.html
-    format: raw
-    fields:
-      - { name: body, label: HTML, type: code, options: { language: html } }
+  - name: ja
+    label: 🇯🇵 日本語
+    type: group
+    items:
+      - name: home_ja
+        label: Home
+        type: file
+        path: ja/index.html
+        format: raw
+        fields:
+          - { name: body, label: HTML, type: code, options: { language: html } }
+      - name: about_ja
+        label: About
+        type: file
+        path: ja/about.html
+        format: raw
+        fields:
+          - { name: body, label: HTML, type: code, options: { language: html } }
+      - name: contact_ja
+        label: Contact
+        type: file
+        path: ja/contact.html
+        format: raw
+        fields:
+          - { name: body, label: HTML, type: code, options: { language: html } }
+      - name: news_ja
+        label: News
+        type: file
+        path: data/news.ja.json
+        format: json
+        list: true
+        fields:
+          - { name: title, label: Title, type: string }
+          - { name: date, label: Date, type: date }
+          - { name: tag, label: Tag, type: select, options: { values: [PRESS, PROJECT, EVENT] } }
+          - { name: lang, label: Language, type: string }
+          - { name: body, label: Body, type: text }
 
-  # ---------- 중국어 ----------
-  - name: home_zh
-    label: Home (ZH)
-    type: file
-    path: zh/index.html
-    format: raw
-    fields:
-      - { name: body, label: HTML, type: code, options: { language: html } }
-  - name: about_zh
-    label: About (ZH)
-    type: file
-    path: zh/about.html
-    format: raw
-    fields:
-      - { name: body, label: HTML, type: code, options: { language: html } }
-  - name: contact_zh
-    label: Contact (ZH)
-    type: file
-    path: zh/contact.html
-    format: raw
-    fields:
-      - { name: body, label: HTML, type: code, options: { language: html } }
-
-  # ---------- 뉴스 (언어별) ----------
-  - name: news_ko
-    label: 뉴스 (한국어)
-    type: file
-    path: data/news.ko.json
-    format: json
-    list: true
-    fields:
-      - { name: title, label: 제목, type: string }
-      - { name: date, label: 날짜, type: date }
-      - { name: tag, label: 태그, type: select, options: { values: [PRESS, PROJECT, EVENT] } }
-      - { name: lang, label: 언어, type: string }
-      - { name: body, label: 내용, type: text }
-  - name: news_en
-    label: News (EN)
-    type: file
-    path: data/news.en.json
-    format: json
-    list: true
-    fields:
-      - { name: title, label: Title, type: string }
-      - { name: date, label: Date, type: date }
-      - { name: tag, label: Tag, type: select, options: { values: [PRESS, PROJECT, EVENT] } }
-      - { name: lang, label: Language, type: string }
-      - { name: body, label: Body, type: text }
-  - name: news_ja
-    label: News (JA)
-    type: file
-    path: data/news.ja.json
-    format: json
-    list: true
-    fields:
-      - { name: title, label: Title, type: string }
-      - { name: date, label: Date, type: date }
-      - { name: tag, label: Tag, type: select, options: { values: [PRESS, PROJECT, EVENT] } }
-      - { name: lang, label: Language, type: string }
-      - { name: body, label: Body, type: text }
-  - name: news_zh
-    label: News (ZH)
-    type: file
-    path: data/news.zh.json
-    format: json
-    list: true
-    fields:
-      - { name: title, label: Title, type: string }
-      - { name: date, label: Date, type: date }
-      - { name: tag, label: Tag, type: select, options: { values: [PRESS, PROJECT, EVENT] } }
-      - { name: lang, label: Language, type: string }
-      - { name: body, label: Body, type: text }
+  - name: zh
+    label: 🇨🇳 中文
+    type: group
+    items:
+      - name: home_zh
+        label: Home
+        type: file
+        path: zh/index.html
+        format: raw
+        fields:
+          - { name: body, label: HTML, type: code, options: { language: html } }
+      - name: about_zh
+        label: About
+        type: file
+        path: zh/about.html
+        format: raw
+        fields:
+          - { name: body, label: HTML, type: code, options: { language: html } }
+      - name: contact_zh
+        label: Contact
+        type: file
+        path: zh/contact.html
+        format: raw
+        fields:
+          - { name: body, label: HTML, type: code, options: { language: html } }
+      - name: news_zh
+        label: News
+        type: file
+        path: data/news.zh.json
+        format: json
+        list: true
+        fields:
+          - { name: title, label: Title, type: string }
+          - { name: date, label: Date, type: date }
+          - { name: tag, label: Tag, type: select, options: { values: [PRESS, PROJECT, EVENT] } }
+          - { name: lang, label: Language, type: string }
+          - { name: body, label: Body, type: text }
