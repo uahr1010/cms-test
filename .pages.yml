@@ -130,4 +130,13 @@ content:
       - { name: body, label: Body, type: text }
   - name: news_zh
     label: News (ZH)
-    type:
+    type: file
+    path: data/news.zh.json
+    format: json
+    list: true
+    fields:
+      - { name: title, label: Title, type: string }
+      - { name: date, label: Date, type: date }
+      - { name: tag, label: Tag, type: select, options: { values: [PRESS, PROJECT, EVENT] } }
+      - { name: lang, label: Language, type: string }
+      - { name: body, label: Body, type: text }
